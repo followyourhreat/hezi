@@ -107,4 +107,12 @@ origin  git@git.coding.net:user/project.git (push)
 $git remote add both git@git.coding.net:user/project.git #添加一个名为 both 的远端
 
 $git push both master #提交both远端master主干
+http://120.24.55.58:8147/#/   hezi admin  12345678
+
+http://testfiles.ourslinks.com/aosiche.html#/ aisiche  admin 1324567
+
+http://120.24.55.58:8146  kuwa  18012346578   123456
+
 ```
+
+
