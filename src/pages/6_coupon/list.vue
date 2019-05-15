@@ -3,10 +3,12 @@
     <div class="dt-search-top">
       <div class="dt-search-cells">
         <div class="dt-search-cell">
-          优惠券类型：<dt-select v-model="params.coupon_type" class="dt-search-select" url="couponType"/>
+          优惠券类型：
+          <dt-select v-model="params.coupon_type" class="dt-search-select" url="couponType"/>
         </div>
         <div class="dt-search-cell">
-          领取方式：<dt-select v-model="params.fetch_type" class="dt-search-select" url="couponWay"/>
+          领取方式：
+          <dt-select v-model="params.fetch_type" class="dt-search-select" url="couponWay"/>
         </div>
         <div class="dt-search-cell">
           <Button type="ghost" @click="handleSearch">查询</Button>
@@ -40,10 +42,21 @@
         <FormItem label="有效天数" prop="expire">
           <Input v-model="formData.expire" placeholder="请输入有效天数"></Input>
         </FormItem>
+
         <FormItem label="商品" prop="goods_id" v-if="formData.coupon_type =='2'">
           <Select v-model="formData.goods_id">
-            <Option v-for="item in mallgoodsList" :value="item.id" :key="item.id">{{ item.goods_name }}</Option>
+            <Option
+              v-for="item in mallgoodsList"
+              :value="item.id"
+              :key="item.id"
+            >{{ item.goods_name }}</Option>
           </Select>
+        </FormItem>
+        <FormItem label="适用平台" prop="platform">
+          <dt-select v-model="formData.platform" class="dt-search-select" url="couponWayPlatform"/>
+        </FormItem>
+        <FormItem label="适用地区" prop="area">
+          <dt-select v-model="formData.area" class="dt-search-select" url="countryModel"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -54,184 +67,205 @@
   </div>
 </template>
 <script>
-  export default {
-    data () {
-      return {
-        params: {
-          keyword: '',
-          coupon_type: '0',
-          fetch_type: '0',
-        },
-        columns: [
-          { title: '序号',
-            key: 'sort',
-            width: 60,
-            render: (h, params) => {
-              const label = params.index + 1;
-              return h('span', {}, label)
-            }
-          },
-          { title: '优惠券类型', 
-            key: 'coupon_type',
-            render: (h, params) => {
-              const obj = {'1': '全品类优惠券','2': '特定品类优惠券'}
-              const label = obj[params.row.coupon_type]
-              return h('span', {}, label)
-            } 
-          },
-          { title: '金额', key: 'amount' },
-          { title: '满售可用', key: 'use_condition' },
-          { title: '发放张数', key: 'number' },
-          { title: '领取方式', 
-            key: 'fetch_type',
-            render: (h, params) => {
-              const obj = {'1': '公开领取','2': '奖品领取'}
-              const label = obj[params.row.fetch_type]
-              return h('span', {}, label)
-            } 
-          },
-          { title: '开始日期',
-            key: 'start_date',
-            width: 150,
-            render: (h, params) => {
-              const label = new Date(params.row.start_date*1000).Format("yyyy-MM-dd")
-              return h('span', {}, label)
-            }
-          },
-          { title: '结束日期',
-            key: 'end_date',
-            width: 150,
-            render: (h, params) => {
-              const label = new Date(params.row.end_date*1000).Format("yyyy-MM-dd")
-              return h('span', {}, label)
-            }
-          },
-          { title: '有效天数',
-            key: 'expire',
-            render: (h, params) => {
-              var expire = Number(params.row.expire)
-              var label = ''
-              if(expire < 0){
-                label = '已过期'
-              }else if(expire == 0){
-                label = '今天过期'
-              }else{
-                label = expire
-              }
-              return h('span', {}, label)
-            }
-          },
-          { title: '操作',
-            width: 150, 
-            key: 'operation' ,
-            render: (h, params) => {
-              return h('div', [
-                  h('span', {
-                      class: 'span-active',
-                      on: {
-                        click: () => {
-                          this.handleEdit(params.row);
-                        }
-                      }
-                  }, '编辑'),
-                  h('span', {
-                      class: 'span-del',
-                      on: {
-                        click: () => {
-                          this.handleRemove('coupon/del',{id:params.row.id})
-                        }
-                      }
-                  }, '删除')
-              ]);
-            }
+export default {
+  data() {
+    return {
+      params: {
+        keyword: "",
+        coupon_type: "0",
+        fetch_type: "0"
+      },
+      columns: [
+        {
+          title: "序号",
+          key: "sort",
+          width: 60,
+          render: (h, params) => {
+            const label = params.index + 1;
+            return h("span", {}, label);
           }
-        ],
-        itemId: 0,
-        modal1: false,
-        mallgoodsList: [],
-        formData: {
-          coupon_type: '',
-          amount: '',
-          use_condition: '',
-          number: '',
-          start_date: '',
-          end_date: '',
-          expire: '',
-          goods_id: '',
         },
-        rule: {
-          
+        {
+          title: "优惠券类型",
+          key: "coupon_type",
+          render: (h, params) => {
+            const obj = { "1": "全品类优惠券", "2": "特定品类优惠券" };
+            const label = obj[params.row.coupon_type];
+            return h("span", {}, label);
+          }
         },
-      }
-    },
-    computed: {
-      modelTitle(){
-        return this.itemId?'编辑':'新增'
-      }
-    }, 
-    mounted () {
-      this.getMallgoodsList();
-    },
-    methods: {
-      getMallgoodsList() {
-        this.$post('mallgoods/list',{page_size: 0}).then( res => {
-          this.mallgoodsList = res.data;
-        })
-      },
-      selectDate(val) {
-        this.formData.start_date = val[0]
-        this.formData.end_date = val[1]
-      },
-      handleAdd() {
-        this.modal1 = true;
-        this.itemId = 0;
-        this.$refs.form.resetFields();
-        this.$refs.date.setDate('','');
-      },
-      handleEdit(item) {
-        this.modal1 = true;
-        this.itemId = item.id;
-        this.formData = Object.assign(this.formData,item);
-        this.formData.start_date = new Date(item.start_date*1000).Format("yyyy-MM-dd");
-        this.formData.end_date = new Date(item.end_date*1000).Format("yyyy-MM-dd");
-        this.$refs.date.setDate(this.formData.start_date,this.formData.end_date);
-      },
-      handleSubmit() {
-        const params = {
-          coupon_type: this.formData.coupon_type,
-          amount: this.formData.amount,
-          use_condition: this.formData.use_condition,
-          number: this.formData.number,
-          fetch_type: this.formData.fetch_type,
-          start_date: this.formData.start_date,
-          end_date: this.formData.end_date,
-          expire: this.formData.expire,
-          goods_id: this.formData.goods_id,
-        }
-        if(this.itemId){
-          this.$post('coupon/edit',
-            {
-              ...params,
-              id: this.itemId
+        { title: "金额", key: "amount" },
+        { title: "满售可用", key: "use_condition" },
+        { title: "发放张数", key: "number" },
+        {
+          title: "领取方式",
+          key: "fetch_type",
+          render: (h, params) => {
+            const obj = { "1": "公开领取", "2": "奖品领取" };
+            const label = obj[params.row.fetch_type];
+            return h("span", {}, label);
+          }
+        },
+        {
+          title: "开始日期",
+          key: "start_date",
+          width: 150,
+          render: (h, params) => {
+            const label = new Date(params.row.start_date * 1000).Format(
+              "yyyy-MM-dd"
+            );
+            return h("span", {}, label);
+          }
+        },
+        {
+          title: "结束日期",
+          key: "end_date",
+          width: 150,
+          render: (h, params) => {
+            const label = new Date(params.row.end_date * 1000).Format(
+              "yyyy-MM-dd"
+            );
+            return h("span", {}, label);
+          }
+        },
+        {
+          title: "有效天数",
+          key: "expire",
+          render: (h, params) => {
+            var expire = Number(params.row.expire);
+            var label = "";
+            if (expire < 0) {
+              label = "已过期";
+            } else if (expire == 0) {
+              label = "今天过期";
+            } else {
+              label = expire;
             }
-          ).then( res => {
-            this.modal1 = false;
-            this.handleSearch()
-          })
-        }else{
-          this.$post('coupon/add',
-            {
-              ...params,
-            }
-          ).then( res => {
-            this.modal1 = false;
-            this.handleSearch()
-          })
+            return h("span", {}, label);
+          }
+        },
+        {
+          title: "操作",
+          width: 150,
+          key: "operation",
+          render: (h, params) => {
+            return h("div", [
+              h(
+                "span",
+                {
+                  class: "span-active",
+                  on: {
+                    click: () => {
+                      this.handleEdit(params.row);
+                    }
+                  }
+                },
+                "编辑"
+              ),
+              h(
+                "span",
+                {
+                  class: "span-del",
+                  on: {
+                    click: () => {
+                      this.handleRemove("coupon/del", { id: params.row.id });
+                    }
+                  }
+                },
+                "删除"
+              )
+            ]);
+          }
         }
+      ],
+      itemId: 0,
+      modal1: false,
+      mallgoodsList: [],
+      formData: {
+        coupon_type: "",
+        amount: "",
+        use_condition: "",
+        number: "",
+        start_date: "",
+        end_date: "",
+        expire: "",
+        goods_id: "",
+        platform: "",
+        area: "",
+        areaCode: "",
+        is_active: ""
       },
-      handleExport() {
-
+      rule: {}
+    };
+  },
+  computed: {
+    modelTitle() {
+      return this.itemId ? "编辑" : "新增";
+    }
+  },
+  mounted() {
+    this.getMallgoodsList();
+  },
+  methods: {
+    getMallgoodsList() {
+      this.$post("mallgoods/list", { page_size: 0 }).then(res => {
+        this.mallgoodsList = res.data;
+      });
+    },
+    selectDate(val) {
+      this.formData.start_date = val[0];
+      this.formData.end_date = val[1];
+    },
+    handleAdd() {
+      this.modal1 = true;
+      this.itemId = 0;
+      this.$refs.form.resetFields();
+      this.$refs.date.setDate("", "");
+    },
+    handleEdit(item) {
+      this.modal1 = true;
+      this.itemId = item.id;
+      this.formData = Object.assign(this.formData, item);
+      this.formData.start_date = new Date(item.start_date * 1000).Format(
+        "yyyy-MM-dd"
+      );
+      this.formData.end_date = new Date(item.end_date * 1000).Format(
+        "yyyy-MM-dd"
+      );
+      this.$refs.date.setDate(this.formData.start_date, this.formData.end_date);
+    },
+    handleSubmit() {
+      const params = {
+        coupon_type: this.formData.coupon_type,
+        amount: this.formData.amount,
+        use_condition: this.formData.use_condition,
+        number: this.formData.number,
+        fetch_type: this.formData.fetch_type,
+        start_date: this.formData.start_date,
+        end_date: this.formData.end_date,
+        expire: this.formData.expire,
+        goods_id: this.formData.goods_id,
+        platform: this.formData.platform,
+        area: this.formData.area
+      };
+      if (this.itemId) {
+        this.$post("coupon/edit", {
+          ...params,
+          id: this.itemId
+        }).then(res => {
+          this.modal1 = false;
+          this.handleSearch();
+        });
+      } else {
+        this.$post("coupon/add", {
+          ...params
+        }).then(res => {
+          this.modal1 = false;
+          this.handleSearch();
+        });
       }
     },
-  };
+    handleExport() {}
+  }
+};
 </script>
