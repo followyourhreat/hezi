@@ -1,0 +1,139 @@
+//iviewUI重写
+@import '~iview/src/styles/index.less';
+@import './config.less';
+
+//自定义主题色
+@main-bg: #0A0B11;	//底色背景色
+@page-bg: #171721;	//面板背景色
+@table-item: #22212F;   //表格高亮色
+@menu-bg: #14141D;  //菜单背景色
+@text-color: rgba(255,255,255,0.70);  //字体颜色
+
+// 配置主题色,相关样式配置参数https://github.com/iview/iview/blob/2.0/src/styles/custom.less
+@table-thead-bg               : @table-item;
+@table-td-stripe-bg           : @table-item;
+@table-td-hover-bg            : @table-item;
+@table-td-highlight-bg        : @table-item;
+@border-color-base            : @table-item;
+@border-color-split           : @table-item;
+
+@menu-dark-title              : @menu-bg;
+@menu-dark-active-bg          : #222231;
+
+@primary-color                : #ff0000;
+@selected-color               : @table-item;
+
+.ivu-input,
+.ivu-input-group-prepend,
+.ivu-input-group-append,
+.ivu-select-selection,
+.ivu-select-dropdown,
+.ivu-upload-drag,
+.ivu-page-prev,
+.ivu-page-next,
+.ivu-page-item {
+	background: @main-bg;
+}
+
+.ivu-table,
+.ivu-table td,
+.ivu-modal-content,
+.ivu-tree-title,
+.ivu-tree-title:hover,
+.ivu-tree-title-selected,
+.ivu-tree-title-selected:hover {
+	background: @page-bg;
+}
+
+.ivu-message-notice-content,
+.ivu-select-item:hover,
+.ivu-menu-item:hover {
+	background: @table-item;
+}
+
+/* ----------按钮--------------- */
+.ivu-btn-ghost,.ivu-btn-ghost:hover{
+	background: #ff0000;
+	border-color:#ff0000;
+  color: @text-color;
+
+}
+.ivu-btn-info,.ivu-btn-info:hover{
+	background: #0489ff;
+  border-color: #0489ff;
+  margin-left: 25px;
+  color: @text-color;
+ 
+}
+.ivu-btn-info{
+  // border:none;
+}
+/* ----------菜单--------------- */
+.ivu-menu-vertical .ivu-menu-item {
+	text-align: center;
+	padding: 15px 10px;
+}
+
+/* ----------弹框--------------- */
+.ivu-modal-header-inner,
+.ivu-modal-confirm-head-title {
+	color: @text-color;
+}
+
+/* ----------加载效果--------------- */
+.ivu-spin-fix {
+	background: rgba(34,34,37,0.9);
+}
+
+/* ----------面板--------------- */
+.ivu-tabs {
+	height: 100%;
+}
+
+/* ----------日期--------------- */
+span.ivu-date-picker-cells-cell-disabled, span.ivu-date-picker-cells-cell-disabled:hover {
+    background: @table-item;
+}
+/* ----------时间TimePick--------------- */
+.ivu-time-picker-cells-cell-selected, .ivu-time-picker-cells-cell-selected:hover, .ivu-time-picker-cells-cell:hover {
+    background: @table-item;
+}
+
+/* ----------输入框--------------- */
+.ivu-input-group-prepend {
+    width: 65px;
+}
+.ivu-btn-group:not(.ivu-btn-group-vertical) > .ivu-btn:first-child:not(:last-child),.ivu-btn-group:not(.ivu-btn-group-vertical) > .ivu-btn:last-child:not(:first-child){
+  border-radius: 15px;
+}
+.ivu-btn-ghost:focus{
+  box-shadow: none;
+}
+.demo-table-info-column {
+  color: #ff0000;
+}
+.ivu-table-header .demo-table-info-column {
+  color: @text-color;
+}
+
+// 分页
+.ivu-page-item,.ivu-page-prev, .ivu-page-next {
+  background: #fff;
+  color:#333;
+  border-color: #fff;
+}
+.ivu-page-item a{
+  color:#333;
+}
+.ivu-page-item:hover,.ivu-page-prev:hover, .ivu-page-next:hover,{
+  background: #ff0000;
+}
+.ivu-page-item:hover a,.ivu-page-prev:hover a,.ivu-page-next:hover a{
+  color:#333;
+}
+.ivu-page-item-active a,.ivu-page-prev a,.ivu-page-next a, .ivu-page-item-active:hover a{
+  color:#333;
+}
+// .main-header .main-right .ivu-avatar-image{
+//   border-radius:0;
+// }
